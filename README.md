@@ -88,6 +88,15 @@ you want to use the included compiler plugins (currently just
 to copy the `plugins` directory as well, and make sure it's in the
 same directory as the jar.
 
+You'll want to make sure your environment can handle UTF-8. You may need to
+add something like `-Dsun.jnu.encoding=UTF-8 -Dfile.encoding=UTF-8` to the
+parameters you pass Java, and/or set up a unicode-aware locale, like:
+
+```
+LANG=en_US.UTF-8
+LC_ALL=en_US.UTF-8
+```
+
 ### Disclaimers
 
 There are huge risks to running an IRC bot! Ideally Spirebot would be run in a
@@ -117,4 +126,4 @@ Apache license, and is copyright Miles Sabin and contributors.
 Interoperability code between Shapeless, Scalaz, and Spire is included under
 the MIT license, and is copyright Lars Hupel.
 
-Apart from Multibot, Spire itself is copyright Erik Osheim, 2013.
+Apart from Multibot, Spirebot itself is copyright Erik Osheim, 2013.

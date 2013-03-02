@@ -59,7 +59,7 @@ object Spirebot extends PircBot {
   val ConsoleErr = Console.err
 
   val baos = new ByteArrayOutputStream
-  val ps = new PrintStream(baos)
+  val ps = new PrintStream(baos, true, "UTF-8")
 
   val repls = scala.collection.mutable.Map[String, IMain]()
 

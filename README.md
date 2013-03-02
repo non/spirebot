@@ -102,10 +102,19 @@ the bot's actions (as commanded by the denizens of IRC).
 
 ### Copyright and License
 
-Spirebot is based on [MultiBot](https://github.com/lopex/multibot), by
-Marcin Mielżyński (lopex).
-
-All code is available to you under the
+Spirebot is available to you under the
 [MIT license](http://opensource.org/licenses/mit-license.php).
 
-Changes copyright Erik Osheim, 2011-2012.
+Spirebot is based on [MultiBot](https://github.com/lopex/multibot), by
+Marcin Mielżyński (lopex), which is also under the MIT license.
+
+[Scalaz](https://github.com/scalaz/scalaz) is included under the BSD-2
+license, and is copyright its authors.
+
+[Shapeless](https://github.com/milessabin/shapeless) is included under the
+Apache license, and is copyright Miles Sabin and contributors.
+
+Interoperability code between Shapeless, Scalaz, and Spire is included under
+the MIT license, and is copyright Lars Hupel.
+
+Apart from Multibot, Spire itself is copyright Erik Osheim, 2013.

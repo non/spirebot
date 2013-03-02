@@ -6,10 +6,10 @@ version := "0.1"
 
 scalaVersion := "2.10.0"
 
+resolvers += Resolver.sonatypeRepo("snapshots")
+
 libraryDependencies ++= {
   Seq(
-    // irc
-    "pircbot" % "pircbot" % "1.5.0",
     // scala
     "org.scala-lang" % "scala-compiler" % "2.10.0",
     "org.scala-lang" % "scala-reflect" % "2.10.0",
@@ -17,11 +17,13 @@ libraryDependencies ++= {
     "org.spire-math" %% "spire" % "0.3.0",
     // shapeless
     "com.chuusai" %% "shapeless" % "1.2.4",
-    "org.typelevel" %% "shapeless-spire" % "0.1",
+    "org.typelevel" %% "shapeless-spire" % "0.2-SNAPSHOT",
     // scalaz
     "org.scalaz" %% "scalaz-core" % "7.0.0-M8",
-    "org.typelevel" %% "shapeless-scalaz" % "0.1",
-    "org.typelevel" %% "scalaz-spire" % "0.1.1"
+    "org.typelevel" %% "shapeless-scalaz" % "0.2-SNAPSHOT",
+    "org.typelevel" %% "scalaz-spire" % "0.2-SNAPSHOT",
+    // irc
+    "pircbot" % "pircbot" % "1.5.0"
   )
 }
 

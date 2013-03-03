@@ -4,7 +4,9 @@ import org.jibble.pircbot.PircBot
 
 import java.io.{PrintStream, ByteArrayOutputStream}
 
+import scala.tools.reflect.ToolBox
 import scala.reflect.runtime.universe._
+
 import scala.tools.nsc.interpreter.IMain
 import scala.tools.nsc.interpreter.Results._
 import scala.util.matching.Regex
@@ -15,26 +17,30 @@ import spire.syntax._
 
 object Util {
   def timer[A](f: => A): A = {
+    val warmupRuns = 3
     val timerRuns = 5
 
-    def disp(t: Long): String = if (t < 1000) {
+    def disp(t: Long): String = if (t < 1000)
       "%dns" format t
-    } else if (t < 1000000) {
+    else if (t < 1000000)
       "%.1fµs" format (t / 1000.0)
-    } else {
+    else
       "%.2fms" format (t / 1000000.0)
-    }
+
+    var a: A = f
+    cfor(1)(_ < warmupRuns, _ + 1)(_ => a = f)
+    System.gc()
 
     var ts: List[Long] = Nil
-    var a: A = f
     cfor(0)(_ < timerRuns, _ + 1) { i =>
       val t0 = System.nanoTime()
       a = f
       val t = System.nanoTime() - t0
       ts = t :: ts
     }
-    val mean = ts.qsum / timerRuns
-    val dev = (ts.map(t => pow(t - mean, 2)).qsum / timerRuns).sqrt
+
+    val mean: Long = ts.qsum / timerRuns
+    val dev: Long = (ts.map(t => pow(t - mean, 2)).qsum / timerRuns).sqrt
 
     System.out.println("mean %s over %d runs (± %s)" format (disp(mean), timerRuns, disp(dev)))
     a
@@ -44,6 +50,8 @@ object Util {
     case Expr(Block(List(u), Literal(Constant(())))) => u
     case x => x.tree
   }
+
+  //val toolbox = runtimeMirror(getClass.getClassLoader).mkToolBox()
 }
 
 object Spirebot extends PircBot {
@@ -187,7 +195,7 @@ object Spirebot extends PircBot {
   def showTree(channel: String, text: String) {
     useRepl(channel) { (repl, out) =>
       repl.interpret("unpack(reify { %s })" format text) match {
-        case Success => sendLines(channel, out.toString.replaceAll("^[^=]* = *", ""))
+        case Success => sendLines(channel, out.toString.replaceAll("^[^=]* = *", "").replace(" >: Nothing <: Any", ""))
         case Error => out.toString.replaceAll("^<console>:[0-9]+: *", "")
         case Incomplete => sendLines(channel, "error: incomplete expression")
       }

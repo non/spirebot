@@ -6,6 +6,8 @@ version := "0.1"
 
 scalaVersion := "2.10.0"
 
+resolvers += Resolver.sonatypeRepo("releases")
+
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies ++= {
@@ -14,7 +16,7 @@ libraryDependencies ++= {
     "org.scala-lang" % "scala-compiler" % "2.10.0",
     "org.scala-lang" % "scala-reflect" % "2.10.0",
     // spire
-    "org.spire-math" %% "spire" % "0.3.0",
+    "org.spire-math" %% "spire" % "0.4.0-M1",
     // shapeless
     "com.chuusai" %% "shapeless" % "1.2.4",
     "org.typelevel" %% "shapeless-spire" % "0.2-SNAPSHOT",
@@ -35,6 +37,6 @@ seq(assemblySettings: _*)
 
 scalacOptions ++= Seq("-feature", "-language:_", "-deprecation", "-Xexperimental")
 
-conflictWarning ~= { cw =>
-  cw.copy(filter = (id: ModuleID) => true, group = (id: ModuleID) => id.organization + ":" + id.name, level = Level.Error, failOnConflict = true)
-}
+//conflictWarning ~= { cw =>
+//  cw.copy(filter = (id: ModuleID) => true, group = (id: ModuleID) => id.organization + ":" + id.name, level = Level.Error, failOnConflict = true)
+//}

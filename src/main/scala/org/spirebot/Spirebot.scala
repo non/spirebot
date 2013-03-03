@@ -13,7 +13,7 @@ import spire.implicits._
 import spire.math._
 import spire.syntax._
 
-object Timer {
+object Util {
   def timer[A](f: => A): A = {
     val timerRuns = 5
 
@@ -38,6 +38,11 @@ object Timer {
 
     System.out.println("mean %s over %d runs (± %s)" format (disp(mean), timerRuns, disp(dev)))
     a
+  }
+
+  def unpack(e: Expr[_]) = e match {
+    case Expr(Block(List(u), Literal(Constant(())))) => u
+    case x => x.tree
   }
 }
 
@@ -76,37 +81,8 @@ object Spirebot extends PircBot {
     "scalaz._", "Scalaz._",
     "shapeless._", "shapeless.contrib.spire._",
     "scala.reflect.runtime.universe._",
-    "spire.algebra._", "spire.implicits._", "spire.math._", "spire.random._", "spire.syntax._"
-  )
-
-  val defines = List(
-    """
-  def timer[A](f: => A): A = {
-    val timerRuns = 5
-
-    def disp(t: Long): String = if (t < 1000) {
-      "%dns" format t
-    } else if (t < 1000000) {
-      "%.1fµs" format (t / 1000.0)
-    } else {
-      "%.2fms" format (t / 1000000.0)
-    }
-
-    var ts: List[Long] = Nil
-    var a: A = f
-    cfor(0)(_ < timerRuns, _ + 1) { i =>
-      val t0 = System.nanoTime()
-      a = f
-      val t = System.nanoTime() - t0
-      ts = t :: ts
-    }
-    val mean = ts.qsum / timerRuns
-    val dev = (ts.map(t => pow(t - mean, 2)).qsum / timerRuns).sqrt
-
-    System.out.println("averaged %s over %d runs (± %s)" format (disp(mean), timerRuns, disp(dev)))
-    a
-  }
-""".trim
+    "spire.algebra._", "spire.implicits._", "spire.math._", "spire.random._", "spire.syntax._",
+    "org.spirebot.Util._"
   )
 
   def main(args: Array[String]) {
@@ -171,7 +147,6 @@ object Spirebot extends PircBot {
   def startRepl() = {
     val repl = new IMain(settings)
     imports.foreach(repl.quietImport(_))
-    defines.foreach(repl.interpret(_))
     repl
   }
 
@@ -195,9 +170,9 @@ object Spirebot extends PircBot {
   def eval(channel: String, text: String) {
     useRepl(channel) { (repl, out) =>
       val result = repl.interpret(text) match {
-        case Success => out.toString.replaceAll("(?m:^res[0-9]+: *)", "")
+        case Success => out.toString.replaceAll("^res[0-9]+: *", "")
         case Error => out.toString.replaceAll("^<console>:[0-9]+: *", "")
-        case Incomplete => "error: unexpected EOF found, incomplete expression"
+        case Incomplete => "error: incomplete expression"
       }
       sendLines(channel, result)
     }
@@ -209,8 +184,28 @@ object Spirebot extends PircBot {
     }
   }
 
+  def showTree(channel: String, text: String) {
+    useRepl(channel) { (repl, out) =>
+      repl.interpret("unpack(reify { %s })" format text) match {
+        case Success => sendLines(channel, out.toString.replaceAll("^[^=]* = *", ""))
+        case Error => out.toString.replaceAll("^<console>:[0-9]+: *", "")
+        case Incomplete => sendLines(channel, "error: incomplete expression")
+      }
+    }
+  }
+
+  def dumpTree(channel: String, text: String) {
+    useRepl(channel) { (repl, out) =>
+      repl.interpret("showRaw(unpack(reify { %s }))" format text) match {
+        case Success => sendLines(channel, out.toString.replaceAll("^[^=]* = *", ""))
+        case Error => out.toString.replaceAll("^<console>:[0-9]+: *", "")
+        case Incomplete => sendLines(channel, "error: incomplete expression")
+      }
+    }
+  }
+
   val helpMessage = """
-! EXPR - evaluate EXPR in the repl (see also: @type @show @time)
+! EXPR - evaluate EXPR in the repl (see also: @dump @show @time @type)
 @help - show this message
 @reload - reload the interpreter
 """.trim
@@ -229,7 +224,8 @@ object Spirebot extends PircBot {
   def handle(msg: Msg): Unit = msg.text match {
     case Cmd("!", expr) => eval(msg.channel, expr)
     case Cmd("@type", expr) => showType(msg.channel, expr)
-    case Cmd("@show", expr) => eval(msg.channel, "showRaw(reify { %s }.tree)" format expr)
+    case Cmd("@show", expr) => showTree(msg.channel, expr)
+    case Cmd("@dump", expr) => dumpTree(msg.channel, expr)
     case Cmd("@time", expr) => eval(msg.channel, "timer { %s }" format expr)
     case Cmd("@help", _) => showHelp(msg.channel)
     case Cmd("@reload", _) => reload(msg.channel)

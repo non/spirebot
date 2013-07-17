@@ -13,7 +13,7 @@ import scala.util.matching.Regex
 
 import spire.implicits._
 import spire.math._
-import spire.syntax._
+//import spire.syntax.cfor._
 
 object Util {
   def timer[A](f: => A): A = {

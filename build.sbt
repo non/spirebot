@@ -2,9 +2,9 @@ import AssemblyKeys._
 
 name := "spirebot"
 
-version := "0.2"
+version := "0.3"
 
-scalaVersion := "2.10.0"
+scalaVersion := "2.10.2"
 
 resolvers += Resolver.sonatypeRepo("releases")
 
@@ -13,15 +13,15 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 libraryDependencies ++= {
   Seq(
     // scala
-    "org.scala-lang" % "scala-compiler" % "2.10.0",
-    "org.scala-lang" % "scala-reflect" % "2.10.0",
+    "org.scala-lang" % "scala-compiler" % "2.10.2",
+    "org.scala-lang" % "scala-reflect" % "2.10.2",
     // spire
-    "org.spire-math" %% "spire" % "0.4.0-M2",
+    "org.spire-math" %% "spire" % "0.5.0",
     // shapeless
     "com.chuusai" %% "shapeless" % "1.2.4",
     "org.typelevel" %% "shapeless-spire" % "0.2-SNAPSHOT",
     // scalaz
-    "org.scalaz" %% "scalaz-core" % "7.0.0-M8",
+    "org.scalaz" %% "scalaz-core" % "7.0.0-M9",
     "org.typelevel" %% "shapeless-scalaz" % "0.2-SNAPSHOT",
     "org.typelevel" %% "scalaz-spire" % "0.2-SNAPSHOT",
     // irc
@@ -34,6 +34,13 @@ autoCompilerPlugins := true
 assembleArtifact in packageBin := false
 
 seq(assemblySettings: _*)
+
+mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
+  {
+    case "rootdoc.txt" => MergeStrategy.discard
+    case x => old(x)
+  }
+}
 
 scalacOptions ++= Seq("-feature", "-language:_", "-deprecation", "-Xexperimental")
 

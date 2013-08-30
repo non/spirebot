@@ -10,11 +10,11 @@ resolvers += Resolver.sonatypeRepo("releases")
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
-libraryDependencies ++= {
+libraryDependencies <++= (scalaVersion) { sv =>
   Seq(
     // scala
-    "org.scala-lang" % "scala-compiler" % "2.10.2",
-    "org.scala-lang" % "scala-reflect" % "2.10.2",
+    "org.scala-lang" % "scala-compiler" % sv,
+    "org.scala-lang" % "scala-reflect" % sv,
     // spire
     "org.spire-math" %% "spire" % "0.6.0",
     // shapeless
@@ -46,6 +46,10 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
 
 scalacOptions ++= Seq("-feature", "-language:_", "-deprecation", "-Xexperimental")
 
-//conflictWarning ~= { cw =>
-//  cw.copy(filter = (id: ModuleID) => true, group = (id: ModuleID) => id.organization + ":" + id.name, level = Level.Error, failOnConflict = true)
-//}
+// conflictWarning ~= { cw =>
+//   cw.copy(
+//     filter = (id: ModuleID) => id.organization != "org.scala-lang",
+//     group = (id: ModuleID) => id.organization + ":" + id.name,
+//     level = Level.Error, failOnConflict = true
+//   )
+// }

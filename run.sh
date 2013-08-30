@@ -16,7 +16,7 @@ fi
 
 java \
  -Dnick=spirebot__ \
- -Downer=d_m \
+ -Downers=d_m \
  -Dserver=irc.freenode.net \
  -Dchannels='#spirebot-test' \
  -Dsun.jnu.encoding=UTF-8 \

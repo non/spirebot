@@ -29,7 +29,7 @@ object Util {
     val br = Thyme.Benched.empty
     val a = th.bench(f)(br, effort = 1)
     val (m, r, e) = (fmt(br.runtime), br.runtimeIterations, fmt(br.runtimeError))
-    System.out.println(s"mean $m over $r runs (± $e)")
+    System.out.println(s"averaged $m over $r runs (± $e)")
     a
   }
 

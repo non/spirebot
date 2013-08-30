@@ -57,7 +57,6 @@ import spire.algebra._
 import spire.implicits._
 import spire.math._
 import spire.random._
-import spire.syntax._
 ```
 
 In addition, a `timer` function is defined, which is used by the `@time`
@@ -67,19 +66,28 @@ command.
 
 First you need to assemble Spirebot's jar using `sbt assembly`. After
 that you should have a (huge) jar file containing all the classes
-Spirebot needs at `target/spirebot-assembly-0.1.jar`.
+Spirebot needs at `target/scala-2.10/spirebot-assembly-0.4.jar`.
 
 To run Spirebot, run:
 
 ```
-java -Dnick=spirebot -Downers=d_m -Dchannels='#spire-math' -cp target/spirebot-assembly-0.1.jar org.spirebot.Spirebot
+FOO=999
+java \
+ -Dnick=spirebot -Downers=d_m -Dchannels='#spire-math' \
+ -cp target/spirebot-assembly-0.1.jar \
+ org.spirebot.Spirebot
 ```
 
-You can configure the bot's `nick` (the name they will present in channels) as
-well as comma-separated lists of `owners` (users with authorization to shut
-the bot down, and possibly perform other operations) and `channels` (the IRC
-channels to join on startup). Make sure to use single-quotes to escape IRC
-channel names from the shell.
+You can use Java properties to configure:
+
+ * `nick` (the name the bot presents in channels)
+ * `owners` (comma-separated list of users with special powers)
+ * `channels` (the IRC channels to join on startup)
+ * `server` (the IRC server to connect to, e.g. `irc.freenode.net`)
+ * `port` (the IRC server's port to connect to, e.g. `6667`)
+ * `password` (an optional password to send the IRC server)
+
+Make sure to use single-quotes to escape IRC channel names from the shell.
 
 ### Deploying Spirebot
 
@@ -97,6 +105,9 @@ parameters you pass Java, and/or set up a unicode-aware locale, like:
 LANG=en_US.UTF-8
 LC_ALL=en_US.UTF-8
 ```
+
+The `run.sh` script that is included should set up all necessary environment
+variables, properties, etc. to run Spirebot in UTF-8 mode.
 
 ### Disclaimers
 
@@ -117,6 +128,8 @@ Spirebot is available to you under the
 
 Spirebot is based on [MultiBot](https://github.com/lopex/multibot), by
 Marcin Mielżyński (lopex), which is also under the MIT license.
+
+[Spire](https://github.com/non/spire) is included under the MIT license.
 
 [Scalaz](https://github.com/scalaz/scalaz) is included under the BSD-2
 license, and is copyright its authors.

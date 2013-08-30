@@ -55,14 +55,20 @@ object Util {
 }
 
 object Spirebot extends PircBot {
+
+  def setting(name: String): Option[String] =
+    Option(System.getProperty(name))
   def setting(name: String, default: String): String =
-    Option(System.getProperty(name)).getOrElse(default)
+    setting(name).getOrElse(default)
+  def parseInt(s: String): Option[Int] =
+    if (s.matches("[0-9]+")) Some(s.toInt) else None
 
   val nick: String = setting("nick", "spirebot__")
-
   val owners: Set[String] = setting("owners", "d_m").split(",").toSet
-
   val channels: Seq[String] = setting("channels", "#spire-math").split(",")
+  val server: String = setting("server", "irc.freenode.net")
+  val port: Int = setting("port").flatMap(parseInt).getOrElse(6667)
+  val password: Option[String] = setting("password")
 
   var done = false
 
@@ -89,7 +95,7 @@ object Spirebot extends PircBot {
     "scalaz._", "Scalaz._",
     "shapeless._", "shapeless.contrib.spire._",
     "scala.reflect.runtime.universe._",
-    "spire.algebra._", "spire.implicits._", "spire.math._", "spire.random._", "spire.syntax._",
+    "spire.algebra._", "spire.implicits._", "spire.math._", "spire.random._",
     "org.spirebot.Util._"
   )
 
@@ -101,8 +107,10 @@ object Spirebot extends PircBot {
   }
 
   def connect() {
-    //connect("irc.my.server.org", 23045, "mypassword")
-    connect("irc.freenode.net")
+    password match {
+      case Some(pass) => connect(server, port, pass)
+      case None => connect(server, port)
+    }
     channels.foreach(joinChannel)
   }
 

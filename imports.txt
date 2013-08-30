@@ -1,0 +1,8 @@
+shapeless._
+shapeless.contrib.spire._
+scala.reflect.runtime.universe._
+spire.algebra._
+spire.implicits._
+spire.math._
+spire.random._
+org.spirebot.Util._

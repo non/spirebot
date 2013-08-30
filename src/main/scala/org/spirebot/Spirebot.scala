@@ -2,7 +2,7 @@ package org.spirebot
 
 import org.jibble.pircbot.PircBot
 
-import java.io.{PrintStream, ByteArrayOutputStream}
+import java.io.{File, PrintStream, ByteArrayOutputStream}
 
 import scala.reflect.runtime.universe._
 import scala.tools.nsc.interpreter.IMain
@@ -15,7 +15,7 @@ import spire.math._
 import ichi.bench.Thyme
 
 object Util {
-  val th = new Thyme()
+  val th = new Thyme(watchLoads = false, watchGarbage = false, watchMemory = false)
 
   def disp(t: Long): String =
     if (t < 1000) "%dns" format t
@@ -55,6 +55,11 @@ object Spirebot extends PircBot {
   val port: Int = setting("port").flatMap(parseInt).getOrElse(6667)
   val password: Option[String] = setting("password")
 
+  val imports: Seq[String] =
+    Seq(new File(setting("imports", "imports.txt"))).
+      filter(_.exists).
+      flatMap(io.Source.fromFile(_).mkString.split("\n"))
+
   var done = false
 
   val SystemOut = System.out
@@ -75,14 +80,6 @@ object Spirebot extends PircBot {
     settings.pluginsDir.value = "plugins"
     settings
   }
-
-  val imports = List(
-    "scalaz._", "Scalaz._",
-    "shapeless._", "shapeless.contrib.spire._",
-    "scala.reflect.runtime.universe._",
-    "spire.algebra._", "spire.implicits._", "spire.math._", "spire.random._",
-    "org.spirebot.Util._"
-  )
 
   def main(args: Array[String]) {
     setName(nick)

@@ -2,7 +2,7 @@ import AssemblyKeys._
 
 name := "spirebot"
 
-version := "0.3"
+version := "0.4"
 
 scalaVersion := "2.10.2"
 
@@ -16,12 +16,12 @@ libraryDependencies ++= {
     "org.scala-lang" % "scala-compiler" % "2.10.2",
     "org.scala-lang" % "scala-reflect" % "2.10.2",
     // spire
-    "org.spire-math" %% "spire" % "0.5.0",
+    "org.spire-math" %% "spire" % "0.6.0",
     // shapeless
     "com.chuusai" %% "shapeless" % "1.2.4",
     "org.typelevel" %% "shapeless-spire" % "0.2-SNAPSHOT",
     // scalaz
-    "org.scalaz" %% "scalaz-core" % "7.0.0-M9",
+    "org.scalaz" %% "scalaz-core" % "7.0.3",
     "org.typelevel" %% "shapeless-scalaz" % "0.2-SNAPSHOT",
     "org.typelevel" %% "scalaz-spire" % "0.2-SNAPSHOT",
     // irc

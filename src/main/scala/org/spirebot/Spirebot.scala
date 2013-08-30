@@ -4,45 +4,32 @@ import org.jibble.pircbot.PircBot
 
 import java.io.{PrintStream, ByteArrayOutputStream}
 
-import scala.tools.reflect.ToolBox
 import scala.reflect.runtime.universe._
-
 import scala.tools.nsc.interpreter.IMain
 import scala.tools.nsc.interpreter.Results._
-import scala.util.matching.Regex
+import scala.tools.reflect.ToolBox
 
 import spire.implicits._
 import spire.math._
-//import spire.syntax.cfor._
+
+import ichi.bench.Thyme
 
 object Util {
+  val th = new Thyme()
+
+  def disp(t: Long): String =
+    if (t < 1000) "%dns" format t
+    else if (t < 1000000) "%.1fµs" format (t / 1000.0)
+    else if (t < 1000000000) "%.2fms" format (t / 1000000.0)
+    else "%.3fs" format (t / 1000000000.0)
+
+  def fmt(n: Double): String = disp((n * 1000000000).toLong)
+
   def timer[A](f: => A): A = {
-    val warmupRuns = 3
-    val timerRuns = 5
-
-    def disp(t: Long): String = if (t < 1000)
-      "%dns" format t
-    else if (t < 1000000)
-      "%.1fµs" format (t / 1000.0)
-    else
-      "%.2fms" format (t / 1000000.0)
-
-    var a: A = f
-    cfor(1)(_ < warmupRuns, _ + 1)(_ => a = f)
-    System.gc()
-
-    var ts: List[Long] = Nil
-    cfor(0)(_ < timerRuns, _ + 1) { i =>
-      val t0 = System.nanoTime()
-      a = f
-      val t = System.nanoTime() - t0
-      ts = t :: ts
-    }
-
-    val mean: Long = ts.qsum / timerRuns
-    val dev: Long = (ts.map(t => pow(t - mean, 2)).qsum / timerRuns).sqrt
-
-    System.out.println("mean %s over %d runs (± %s)" format (disp(mean), timerRuns, disp(dev)))
+    val br = Thyme.Benched.empty
+    val a = th.bench(f)(br, effort = 1)
+    val (m, r, e) = (fmt(br.runtime), br.runtimeIterations, fmt(br.runtimeError))
+    System.out.println(s"mean $m over $r runs (± $e)")
     a
   }
 
@@ -50,8 +37,6 @@ object Util {
     case Expr(Block(List(u), Literal(Constant(())))) => u
     case x => x.tree
   }
-
-  //val toolbox = runtimeMirror(getClass.getClassLoader).mkToolBox()
 }
 
 object Spirebot extends PircBot {
@@ -202,7 +187,7 @@ object Spirebot extends PircBot {
 
   def showTree(channel: String, text: String) {
     useRepl(channel) { (repl, out) =>
-      repl.interpret("unpack(reify { %s })" format text) match {
+      repl.interpret(s"unpack(reify { $text })") match {
         case Success => sendLines(channel, out.toString.replaceAll("^[^=]* = *", "").replace(" >: Nothing <: Any", ""))
         case Error => out.toString.replaceAll("^<console>:[0-9]+: *", "")
         case Incomplete => sendLines(channel, "error: incomplete expression")
@@ -212,7 +197,7 @@ object Spirebot extends PircBot {
 
   def dumpTree(channel: String, text: String) {
     useRepl(channel) { (repl, out) =>
-      repl.interpret("showRaw(unpack(reify { %s }))" format text) match {
+      repl.interpret(s"showRaw(unpack(reify { $text }))") match {
         case Success => sendLines(channel, out.toString.replaceAll("^[^=]* = *", ""))
         case Error => out.toString.replaceAll("^<console>:[0-9]+: *", "")
         case Incomplete => sendLines(channel, "error: incomplete expression")
@@ -226,9 +211,7 @@ object Spirebot extends PircBot {
 @reload - reload the interpreter
 """.trim
 
-  def showHelp(channel: String) {
-    sendLines(channel, helpMessage)
-  }
+  def showHelp(channel: String): Unit = sendLines(channel, helpMessage)
 
   def quit() {
     done = true
@@ -242,7 +225,7 @@ object Spirebot extends PircBot {
     case Cmd("@type", expr) => showType(msg.channel, expr)
     case Cmd("@show", expr) => showTree(msg.channel, expr)
     case Cmd("@dump", expr) => dumpTree(msg.channel, expr)
-    case Cmd("@time", expr) => eval(msg.channel, "timer { %s }" format expr)
+    case Cmd("@time", expr) => eval(msg.channel, s"timer { $expr }")
     case Cmd("@help", _) => showHelp(msg.channel)
     case Cmd("@reload", _) => reload(msg.channel)
     case Cmd("@quit", _) => if (owners.contains(msg.sender)) quit()

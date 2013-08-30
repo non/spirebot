@@ -24,6 +24,8 @@ libraryDependencies ++= {
     "org.scalaz" %% "scalaz-core" % "7.0.3",
     "org.typelevel" %% "shapeless-scalaz" % "0.2-SNAPSHOT",
     "org.typelevel" %% "scalaz-spire" % "0.2-SNAPSHOT",
+    // thyme
+    "ichi.bench" % "thyme" % "0.1.0" from "http://plastic-idolatry.com/jars/thyme-0.1.0.jar",
     // irc
     "pircbot" % "pircbot" % "1.5.0"
   )

@@ -162,7 +162,10 @@ object Spirebot extends PircBot {
 
   def sendLines(channel: String, text: String) {
     val lines = text.filter(_ != '\r').split("\n").filter(! _.isEmpty)
-    lines.take(5).foreach(s => sendMessage(channel, s))
+    lines.take(5).foreach { s =>
+      if (s.startsWith("/me ")) sendAction(channel, s.substring(4))
+      else sendMessage(channel, s)
+    }
   }
 
   def eval(channel: String, text: String) {

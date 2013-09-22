@@ -15,6 +15,8 @@ libraryDependencies <++= (scalaVersion) { sv =>
     // scala
     "org.scala-lang" % "scala-compiler" % sv,
     "org.scala-lang" % "scala-reflect" % sv,
+    // akka
+    "com.typesafe.akka" %% "akka-actor" % "2.2.1",
     // spire
     "org.spire-math" %% "spire" % "0.6.0",
     // shapeless

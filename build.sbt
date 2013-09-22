@@ -2,7 +2,7 @@ import AssemblyKeys._
 
 name := "spirebot"
 
-version := "0.4"
+version := "0.5"
 
 scalaVersion := "2.10.2"
 
@@ -18,7 +18,7 @@ libraryDependencies <++= (scalaVersion) { sv =>
     // akka
     "com.typesafe.akka" %% "akka-actor" % "2.2.1",
     // spire
-    "org.spire-math" %% "spire" % "0.6.0",
+    "org.spire-math" %% "spire" % "0.6.1",
     // shapeless
     "com.chuusai" %% "shapeless" % "1.2.4",
     "org.typelevel" %% "shapeless-spire" % "0.2-SNAPSHOT",

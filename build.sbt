@@ -6,6 +6,8 @@ version := "0.5"
 
 scalaVersion := "2.10.2"
 
+fork in run := true
+
 resolvers += Resolver.sonatypeRepo("releases")
 
 resolvers += Resolver.sonatypeRepo("snapshots")

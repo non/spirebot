@@ -1,11 +1,8 @@
 package spirebot
 
-import java.io.{File, PrintStream, ByteArrayOutputStream}
-
+import java.io.File
 import scala.collection.mutable
-
 import akka.actor.{Actor, ActorRef, ActorSystem, Props, Terminated}
-
 import Util._
 
 class Router extends Actor {

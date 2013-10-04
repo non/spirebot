@@ -12,3 +12,5 @@ case class ShowTree(s: String)
 case class DumpTree(s: String)
 case class Reconnect(ms: Int)
 case object Reload
+case object Tick
+

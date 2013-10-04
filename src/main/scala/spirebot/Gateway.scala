@@ -1,18 +1,8 @@
 package spirebot
 
-//import java.io.{File, PrintStream, ByteArrayOutputStream}
-
-import scala.collection.mutable
 import scala.concurrent.duration._
-// import scala.reflect.runtime.universe._
-// import scala.tools.nsc.interpreter.IMain
-// import scala.tools.nsc.interpreter.Results._
-// import scala.tools.nsc.Settings
-
-import akka.actor.{Actor, ActorRef, ActorSystem, Props, Terminated}
-
+import akka.actor.{Actor, ActorRef}
 import org.jibble.pircbot.PircBot
-
 import Util._
 
 class Gateway(router: ActorRef) extends PircBot with Actor {

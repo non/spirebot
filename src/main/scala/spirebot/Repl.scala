@@ -1,28 +1,25 @@
 package spirebot
 
-import java.io.{File, PrintStream, ByteArrayOutputStream}
-
-import scala.collection.mutable
+import java.io.{PrintStream, ByteArrayOutputStream}
 import scala.concurrent.duration._
 import scala.reflect.runtime.universe._
 import scala.tools.nsc.interpreter.IMain
 import scala.tools.nsc.interpreter.Results._
 import scala.tools.nsc.Settings
-
-import akka.actor.{Actor, ActorRef, ActorSystem, Props, Terminated}
-
-import org.jibble.pircbot.PircBot
-
+import akka.actor.{Actor, ActorRef}
 import Util._
 
 class Repl(chan: String, gateway: ActorRef, imports: Seq[String]) extends Actor {
 
+  var lastActive: Long = 0L
+
   def receive = {
-    case Reload => reload()
     case Eval(s) => eval(s)
     case ShowType(s) => showType(s)
     case ShowTree(s) => showTree(s)
     case DumpTree(s) => dumpTree(s)
+    case Reload => reload()
+    case Tick => closeIfIdle()
     case Quit => context.stop(self)
   }
 
@@ -59,6 +56,25 @@ class Repl(chan: String, gateway: ActorRef, imports: Seq[String]) extends Actor 
     }
   }
 
+  val timeout = 1000 * 60 * 60
+
+  val system = context.system
+  import system.dispatcher
+
+  override def preStart() =
+    system.scheduler.scheduleOnce(60.seconds, self, Tick)
+
+  def closeIfIdle(): Unit = {
+    imain.foreach { im =>
+      val now = System.currentTimeMillis
+      if (now - lastActive >= timeout) {
+        imain = None
+        im.close()
+      }
+    }
+    system.scheduler.scheduleOnce(60.seconds, self, Tick)
+  }
+
   private[this] val SystemOut = System.out
   private[this] val SystemErr = System.err
   private[this] val ConsoleOut = Console.out
@@ -83,6 +99,7 @@ class Repl(chan: String, gateway: ActorRef, imports: Seq[String]) extends Actor 
   }
 
   def use(f: (IMain, ByteArrayOutputStream) => String): Unit = {
+    lastActive = System.currentTimeMillis
     val im = imain.getOrElse(startIMain)
     imain = Some(im)
     captureOutput(f(im, baos))

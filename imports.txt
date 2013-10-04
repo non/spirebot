@@ -1,5 +1,4 @@
 shapeless._
-shapeless.contrib.spire._
 scala.reflect.runtime.universe._
 spire.algebra._
 spire.implicits._

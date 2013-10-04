@@ -1,6 +1,6 @@
 package spirebot
 
-import java.io.{PrintStream, ByteArrayOutputStream}
+import java.io.{PrintStream, PrintWriter, ByteArrayOutputStream}
 import scala.concurrent.duration._
 import scala.reflect.runtime.universe._
 import scala.tools.nsc.interpreter.IMain
@@ -76,12 +76,8 @@ class Repl(chan: String, gateway: ActorRef, imports: Seq[String]) extends Actor 
     system.scheduler.scheduleOnce(60.seconds, self, Tick)
   }
 
-  private[this] val SystemOut = System.out
-  private[this] val SystemErr = System.err
-  private[this] val ConsoleOut = Console.out
-  private[this] val ConsoleErr = Console.err
   private[this] val baos = new ByteArrayOutputStream
-  private[this] val ps = new PrintStream(baos, true, "UTF-8")
+  private[this] val pw = new PrintWriter(baos, true)
 
   private[this] var imain: Option[IMain] = None
   private[this] val settings: Settings = {
@@ -94,7 +90,7 @@ class Repl(chan: String, gateway: ActorRef, imports: Seq[String]) extends Actor 
   }
 
   def startIMain: IMain = {
-    val im = new IMain(settings)
+    val im = new IMain(settings, pw)
     imports.foreach(im.quietImport(_))
     im
   }
@@ -108,27 +104,11 @@ class Repl(chan: String, gateway: ActorRef, imports: Seq[String]) extends Actor 
 
   def captureOutput(block: => String): Unit = {
     val s = try {
-      redirectOutputs()
       block
     } finally {
-      resetOutputs()
+      pw.flush()
+      baos.reset()
     }
     gateway ! Send(chan, s)
-  }
-
-  def redirectOutputs(): Unit = {
-    System.setOut(ps)
-    System.setErr(ps)
-    Console.setOut(ps)
-    Console.setErr(ps)
-  }
-
-  def resetOutputs(): Unit = {
-    System.setOut(SystemOut)
-    System.setErr(SystemErr)
-    Console.setOut(ConsoleOut)
-    Console.setErr(ConsoleErr)
-    ps.flush()
-    baos.reset()
   }
 }

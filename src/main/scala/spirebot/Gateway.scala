@@ -49,6 +49,7 @@ class Gateway(router: ActorRef) extends PircBot with Actor {
 
   def reconnect(backoff: Int): Unit = try {
     connect()
+    channels.foreach(joinChannel)
   } catch {
     case e: Exception =>
       e.printStackTrace

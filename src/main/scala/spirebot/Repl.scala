@@ -18,6 +18,7 @@ class Repl(chan: String, gateway: ActorRef, imports: Seq[String]) extends Actor 
     case ShowType(s) => showType(s)
     case ShowTree(s) => showTree(s)
     case DumpTree(s) => dumpTree(s)
+    case Benchmark(s) => eval(s"spirebot.Util.timer { $s }")
     case Reload => reload()
     case Tick => closeIfIdle()
     case Quit => context.stop(self)

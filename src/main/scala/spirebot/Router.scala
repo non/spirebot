@@ -20,7 +20,7 @@ class Router extends Actor {
       case Cmd("!", s) => repl(chan) ! Eval(s)
 
       case Cmd("@reload", _) => repl(chan) ! Reload
-      case Cmd("@time", s) => repl(chan) ! TimeEval(s)
+      case Cmd("@time", s) => repl(chan) ! Benchmark(s)
       case Cmd("@type", s) => repl(chan) ! ShowType(s)
       case Cmd("@show", s) => repl(chan) ! ShowTree(s)
       case Cmd("@dump", s) => repl(chan) ! DumpTree(s)

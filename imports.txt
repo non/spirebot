@@ -5,4 +5,4 @@ spire.algebra._
 spire.implicits._
 spire.math._
 spire.random._
-org.spirebot.Util._
+spirebot.Util._

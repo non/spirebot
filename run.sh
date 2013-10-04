@@ -6,7 +6,7 @@
 export LCLANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
-ASSEMBLY=target/scala-2.10/spirebot-assembly-0.4.jar
+ASSEMBLY=target/scala-2.10/spirebot-assembly-0.6.jar
 
 if [ ! -r $ASSEMBLY ]; then
     echo "couldn't find $ASSEMBLY"
@@ -22,4 +22,4 @@ java \
  -Dsun.jnu.encoding=UTF-8 \
  -Dfile.encoding=UTF-8 \
  -cp $ASSEMBLY \
- org.spirebot.Spirebot
+ spirebot.Spirebot

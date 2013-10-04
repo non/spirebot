@@ -46,27 +46,19 @@ packages allowing interoperability between these three projects. At
 launch Spirebot runs the following imports:
 
 ```scala
-import scalaz._
-import Scalaz._
-
 import shapeless._
-import shapeless.contrib.spire._
 import scala.reflect.runtime.universe._
-
 import spire.algebra._
 import spire.implicits._
 import spire.math._
 import spire.random._
 ```
 
-In addition, a `timer` function is defined, which is used by the `@time`
-command.
-
 ### Running Spirebot
 
 First you need to assemble Spirebot's jar using `sbt assembly`. After
 that you should have a (huge) jar file containing all the classes
-Spirebot needs at `target/scala-2.10/spirebot-assembly-0.4.jar`.
+Spirebot needs at `target/scala-2.10/spirebot-assembly-0.6.jar`.
 
 To run Spirebot, run:
 
@@ -74,7 +66,7 @@ To run Spirebot, run:
 FOO=999
 java \
  -Dnick=spirebot -Downers=d_m -Dchannels='#spire-math' \
- -cp target/spirebot-assembly-0.1.jar \
+ -cp target/scala-2.10/spirebot-assembly-0.6.jar \
  spirebot.Spirebot
 ```
 

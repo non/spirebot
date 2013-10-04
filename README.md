@@ -75,7 +75,7 @@ FOO=999
 java \
  -Dnick=spirebot -Downers=d_m -Dchannels='#spire-math' \
  -cp target/spirebot-assembly-0.1.jar \
- org.spirebot.Spirebot
+ spirebot.Spirebot
 ```
 
 You can use Java properties to configure:

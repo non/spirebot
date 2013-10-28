@@ -1,5 +1,7 @@
 package spirebot
 
+import scala.reflect.runtime.universe._
+
 import ichi.bench.Thyme
 
 object Util {
@@ -29,4 +31,11 @@ object Util {
 
   def parseInt(s: String): Option[Int] =
     if (s.matches("[0-9]+")) Some(s.toInt) else None
+
+  def unpack(e: Expr[_]) = e match {
+    case Expr(Block(List(u), Literal(Constant(())))) => u
+    case x => x.tree
+  }
+
+  def dump(e: Expr[_]) = showRaw(unpack(e))
 }

@@ -18,7 +18,7 @@ class Repl(chan: String, gateway: ActorRef, imports: Seq[String]) extends Actor 
     case ShowType(s) => showType(s)
     case ShowTree(s) => showTree(s)
     case DumpTree(s) => dumpTree(s)
-    case Benchmark(s) => eval(s"spirebot.Util.timer { $s }")
+    //case Benchmark(s) => eval(s"spirebot.Util.timer { $s }")
     case Reload => reload()
     case Tick => closeIfIdle()
     case Quit => context.stop(self)
@@ -42,7 +42,7 @@ class Repl(chan: String, gateway: ActorRef, imports: Seq[String]) extends Actor 
   }
 
   def showTree(text: String): Unit = use { (im, out) =>
-    im.interpret(s"unpack(reify { $text })") match {
+    im.interpret(s"spirebot.Util.unpack(reify { $text })") match {
       case Success => out.toString.replaceAll("^[^=]* = *", "").replace(" >: Nothing <: Any", "")
       case Error => out.toString.replaceAll("^<console>:[0-9]+: *", "")
       case Incomplete => "error: incomplete expression"
@@ -50,7 +50,7 @@ class Repl(chan: String, gateway: ActorRef, imports: Seq[String]) extends Actor 
   }
 
   def dumpTree(text: String): Unit = use { (im, out) =>
-    im.interpret(s"showRaw(unpack(reify { $text }))") match {
+    im.interpret(s"spirebot.Util.dump(reify { $text })") match {
       case Success => out.toString.replaceAll("^[^=]* = *", "")
       case Error => out.toString.replaceAll("^<console>:[0-9]+: *", "")
       case Incomplete => "error: incomplete expression"

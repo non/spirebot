@@ -4,7 +4,7 @@ name := "spirebot"
 
 version := "0.7"
 
-scalaVersion := "2.10.2"
+scalaVersion := "2.10.3"
 
 fork in run := true
 
@@ -17,7 +17,7 @@ libraryDependencies <++= (scalaVersion) { sv =>
     "org.scala-lang" % "scala-compiler" % sv,
     "org.scala-lang" % "scala-reflect" % sv,
     "com.typesafe.akka" %% "akka-actor" % "2.2.1",
-    "org.spire-math" %% "spire" % "0.6.1",
+    "org.spire-math" %% "spire" % "0.7.3",
     "com.chuusai" % "shapeless_2.10.2" % "2.0.0-M1",
     //"org.typelevel" %% "shapeless-spire" % "0.2-SNAPSHOT",
     "org.scalaz" %% "scalaz-core" % "7.0.3",
@@ -34,10 +34,11 @@ assembleArtifact in packageBin := false
 
 seq(assemblySettings: _*)
 
-mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
+mergeStrategy in assembly <<= (mergeStrategy in assembly) { old =>
   {
     case "rootdoc.txt" => MergeStrategy.discard
-    case x => old(x)
+    case "META-INF/MANIFEST.MF" => MergeStrategy.discard
+    case _ => MergeStrategy.first
   }
 }
 

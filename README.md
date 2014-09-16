@@ -58,16 +58,12 @@ import spire.random._
 
 First you need to assemble Spirebot's jar using `sbt assembly`. After
 that you should have a (huge) jar file containing all the classes
-Spirebot needs at `target/scala-2.10/spirebot-assembly-0.6.jar`.
+Spirebot needs at `target/scala-2.11/spirebot-assembly-0.8.jar`.
 
 To run Spirebot, run:
 
 ```
-FOO=999
-java \
- -Dnick=spirebot -Downers=d_m -Dchannels='#spire-math' \
- -cp target/scala-2.10/spirebot-assembly-0.6.jar \
- spirebot.Spirebot
+java -Dnick=spirebot -Downers=d_m -Dchannels='#spire-math' -cp target/scala-2.11/spirebot-assembly-0.8.jar spirebot.Spirebot
 ```
 
 You can use Java properties to configure:

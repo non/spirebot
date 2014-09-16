@@ -91,7 +91,8 @@ class Repl(chan: String, gateway: ActorRef, imports: Seq[String]) extends Actor 
 
   def startIMain: IMain = {
     val im = new IMain(settings, pw)
-    imports.foreach(im.quietImport(_))
+    //imports.foreach(im.quietImport(_))
+    imports.foreach(s => im.interpret(s"import $s"))
     im
   }
 

@@ -2,9 +2,9 @@ import AssemblyKeys._
 
 name := "spirebot"
 
-version := "0.7"
+version := "0.8"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.11.2"
 
 fork in run := true
 
@@ -16,13 +16,13 @@ libraryDependencies <++= (scalaVersion) { sv =>
   Seq(
     "org.scala-lang" % "scala-compiler" % sv,
     "org.scala-lang" % "scala-reflect" % sv,
-    "com.typesafe.akka" %% "akka-actor" % "2.2.1",
-    "org.spire-math" %% "spire" % "0.7.3",
-    "com.chuusai" % "shapeless_2.10.2" % "2.0.0-M1",
+    "com.typesafe.akka" %% "akka-actor" % "2.3.4",
+    "org.spire-math" %% "spire" % "0.8.2",
+    "com.chuusai" %% "shapeless" % "2.0.0",
+    "org.scalaz" %% "scalaz-core" % "7.1.0",
     //"org.typelevel" %% "shapeless-spire" % "0.2-SNAPSHOT",
-    "org.scalaz" %% "scalaz-core" % "7.0.3",
     //"org.typelevel" %% "shapeless-scalaz" % "0.2-SNAPSHOT",
-    "org.typelevel" %% "scalaz-spire" % "0.2-SNAPSHOT",
+    //"org.typelevel" %% "scalaz-spire" % "0.2-SNAPSHOT",
     "ichi.bench" % "thyme" % "0.1.0" from "http://plastic-idolatry.com/jars/thyme-0.1.0.jar",
     "pircbot" % "pircbot" % "1.5.0"
   )
